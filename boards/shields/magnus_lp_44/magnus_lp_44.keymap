@@ -10,8 +10,8 @@
             bindings = <
                 &kp TAB     &kp Q     &kp W     &kp E     &kp R     &kp T         &kp Y     &kp U     &kp I     &kp O     &kp P     &kp MINUS
                 &kp LCTRL   &kp A     &kp S     &kp D     &kp F     &kp G         &kp H     &kp J     &kp K     &kp L     &kp SCLN  &kp QUOT
-                &kp LSHIFT  &kp Z     &kp X     &kp C     &kp V     &kp B         &kp N     &kp M     &kp COMM  &kp DOT   &kp SLSH  &kp RSFT
-                                      &kp LALT  &kp LGUI  &mo 1     &kp SPC       &kp ENT   &mo 2     &kp BSPC  &kp CAPS
+                &kp LSHIFT  &kp Z     &kp X     &kp C     &kp V     &kp B         &kp N     &kp M     &kp COMMA  &kp DOT   &kp SLASH  &kp RSHIFT
+                                      &kp LALT  &kp LGUI  &mo 1     &kp SPACE       &kp ENTER   &mo 2     &kp BSPC  &kp CAPS
             >;
         };
 
@@ -19,9 +19,9 @@
             display-name = "Lower";
             bindings = <
                 &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6       &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12
-                &kp GRAVE  &kp EXCL   &kp AT     &kp HASH   &kp DOLLAR &kp PERC     &kp CARET  &kp AMPS   &kp ASTR   &kp LPAR   &kp RPAR   &kp TILDE
-                &trans      &trans      &trans      &trans      &trans      &trans        &trans      &kp UNDER  &kp PLUS   &kp LCBR   &kp RCBR   &kp PIPE
-                                      &kp LALT   &kp LGUI   &mo 1      &kp SPC      &kp ENT    &mo 2      &kp DEL    &trans
+                &kp GRAVE  &kp EXCL   &kp AT     &kp HASH   &kp DOLLAR &kp PERCENT     &kp CARET  &kp AMPS   &kp ASTRK   &kp LPAR   &kp RPAR   &kp TILDE
+                &trans      &trans      &trans      &trans      &trans      &trans        &trans      &kp UNDER  &kp PLUS   &kp LBKT   &kp RBKT   &kp PIPE
+                                      &kp LALT   &kp LGUI   &mo 1      &kp SPACE      &kp ENTER    &mo 2      &kp DEL    &trans
             >;
         };
 
@@ -30,8 +30,8 @@
             bindings = <
                 &kp GRAVE  &kp 1      &kp 2      &kp 3      &kp 4      &kp 5        &kp 6      &kp 7      &kp 8      &kp 9      &kp 0      &trans
                 &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6       &trans      &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &trans
-                &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12      &kp PLUS   &kp MINS   &kp EQL    &kp LBRC   &kp RBRC   &kp BSLS
-                                      &kp LALT   &kp LGUI   &mo 1      &kp SPC      &kp ENT    &mo 2      &kp BSPC   &studio_unlock
+                &kp F7     &kp F8     &kp F9     &kp F10    &kp F11    &kp F12      &kp PLUS   &kp MINUS   &kp EQUAL    &kp LBKT   &kp RBKT   &kp BSLH
+                                      &kp LALT   &kp LGUI   &mo 1      &kp SPACE      &kp ENTER    &mo 2      &kp BSPC   &studio_unlock
             >;
         };
     };
