@@ -1,0 +1,13 @@
+file_format: "1"
+id: magnus_lp_44
+name: Magnus LP-44
+type: shield
+url: https://github.com/dumagnus/
+requires:
+  - pro_micro
+features:
+  - keys
+  - studio
+siblings:
+  - magnus_lp_44_left
+  - magnus_lp_44_right

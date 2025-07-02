@@ -1,0 +1,17 @@
+if SHIELD_MAGNUS_LP_44_LEFT
+
+# Name must be less than 16 characters long!
+config ZMK_KEYBOARD_NAME
+    default "Magnus LP-44"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_MAGNUS_LP_44_LEFT || SHIELD_MAGNUS_LP_44_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif
