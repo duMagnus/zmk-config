@@ -17,11 +17,20 @@
 #     cmake-args: -DCONFIG_ZMK_STUDIO=y
 #     artifact-name: magnus_lp_44_left_with_studio
 #
+#---
+#include:
+#  - board: nice_nano_v2
+#    shield: magnus_lp_44_left
+#    snippet: studio-rpc-usb-uart
+#    cmake-args: -DCONFIG_ZMK_STUDIO=y
+#  - board: nice_nano_v2
+#    shield: magnus_lp_44_right
 ---
 include:
   - board: nice_nano_v2
-    shield: magnus_lp_44_left
+    shield: magnus_hp_44_left
     snippet: studio-rpc-usb-uart
     cmake-args: -DCONFIG_ZMK_STUDIO=y
   - board: nice_nano_v2
-    shield: magnus_lp_44_right
+    shield: magnus_hp_44_right
+

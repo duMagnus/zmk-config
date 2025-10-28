@@ -1,0 +1,13 @@
+file_format: "1"
+id: magnus_hp_44
+name: Magnus HP-44
+type: shield
+url: https://github.com/dumagnus/
+requires:
+  - pro_micro
+features:
+  - keys
+  - studio
+siblings:
+  - magnus_hp_44_left
+  - magnus_hp_44_right
