@@ -1,4 +1,5 @@
 #include "magnus_hp_44.dtsi"
+#include <dt-bindings/i2c/i2c.h>
 
 &default_transform { // Offset of 6 because the left side has 6 columns
     col-offset = <6>;
