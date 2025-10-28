@@ -45,3 +45,13 @@
 		zephyr,display = &oled;
 	};
 };
+
+/ {
+	vcc_enable: vcc_enable {
+		compatible = "gpio-leds";
+		vcc_en: vcc_en {
+			gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+			label = "VCC ENABLE";
+		};
+	};
+};
