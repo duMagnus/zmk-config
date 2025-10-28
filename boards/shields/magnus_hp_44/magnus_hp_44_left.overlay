@@ -18,13 +18,9 @@
 	};
 };
 
-&i2c0 {
+
+&pro_micro_i2c {
 	status = "okay";
-	compatible = "nordic,nrf-twim";
-	clock-frequency = <100000>;
-	pinctrl-0 = <&i2c0_default>;
-	pinctrl-1 = <&i2c0_sleep>;
-	pinctrl-names = "default", "sleep";
 
 	oled: ssd1306@3c {
 		compatible = "solomon,ssd1306fb";
@@ -35,6 +31,8 @@
 		page-offset = <0>;
 		display-offset = <0>;
 		multiplex-ratio = <31>;
+		segment-remap;
+		com-invdir;
 		com-sequential;
 		prechargep = <0x22>;
 	};
@@ -43,15 +41,5 @@
 / {
 	chosen {
 		zephyr,display = &oled;
-	};
-};
-
-/ {
-	vcc_enable: vcc_enable {
-		compatible = "gpio-leds";
-		vcc_en: vcc_en {
-			gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
-			label = "VCC ENABLE";
-		};
 	};
 };

@@ -8,6 +8,7 @@ requires:
 features:
   - keys
   - studio
+  - display
 siblings:
   - magnus_hp_44_left
   - magnus_hp_44_right
