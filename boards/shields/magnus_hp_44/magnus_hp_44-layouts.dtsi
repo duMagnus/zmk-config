@@ -5,6 +5,8 @@
         compatible = "zmk,physical-layout";
         display-name = "Magnus HP-44";
 
+        zephyr,display = &oled;
+
         kscan = <&kscan0>;
         transform = <&default_transform>;
 
