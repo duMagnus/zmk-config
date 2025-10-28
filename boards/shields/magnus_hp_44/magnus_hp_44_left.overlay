@@ -5,6 +5,7 @@
 		group1 {
 			psels = <NRF_PSEL(TWIM_SDA, 0, 29)>,
 					<NRF_PSEL(TWIM_SCL, 0, 31)>;
+			bias-pull-up;
 		};
 	};
 
@@ -20,6 +21,7 @@
 &i2c0 {
 	status = "okay";
 	compatible = "nordic,nrf-twim";
+	clock-frequency = <I2C_BITRATE_STANDARD>;
 	pinctrl-0 = <&i2c0_default>;
 	pinctrl-1 = <&i2c0_sleep>;
 	pinctrl-names = "default", "sleep";
