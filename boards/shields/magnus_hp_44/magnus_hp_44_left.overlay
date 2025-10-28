@@ -1,5 +1,4 @@
 #include "magnus_hp_44.dtsi"
-#include <dt-bindings/i2c/i2c.h>
 
 &pinctrl {
 	i2c0_default: i2c0_default {
@@ -22,7 +21,7 @@
 &i2c0 {
 	status = "okay";
 	compatible = "nordic,nrf-twim";
-	clock-frequency = <I2C_BITRATE_STANDARD>;
+	clock-frequency = <100000>;
 	pinctrl-0 = <&i2c0_default>;
 	pinctrl-1 = <&i2c0_sleep>;
 	pinctrl-names = "default", "sleep";
