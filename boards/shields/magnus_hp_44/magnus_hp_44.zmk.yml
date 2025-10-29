@@ -9,6 +9,7 @@ features:
   - keys
   - studio
   - display
+  - underglow
 siblings:
   - magnus_hp_44_left
   - magnus_hp_44_right
