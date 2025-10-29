@@ -9,11 +9,6 @@ config ZMK_SPLIT_ROLE_CENTRAL
 
 endif
 
-config ZMK_RGB_UNDERGLOW
-   default y
-config WS2812_STRIP
-   default y
-
 if SHIELD_MAGNUS_HP_44_LEFT || SHIELD_MAGNUS_HP_44_RIGHT
 
 config ZMK_SPLIT
@@ -48,5 +43,12 @@ choice LV_COLOR_DEPTH
 endchoice
 
 endif # LVGL
+
+config ZMK_RGB_UNDERGLOW
+    default y
+config WS2812_STRIP
+    default y
+config ZMK_RGB_UNDERGLOW_EXT_POWER
+    default n
 
 endif
