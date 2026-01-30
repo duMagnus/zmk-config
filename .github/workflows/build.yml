@@ -1,6 +1,32 @@
 name: Build ZMK firmware
-on: [push, pull_request, workflow_dispatch]
+on: 
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      board:
+        description: 'Board Configuration'
+        required: true
+        type: choice
+        options:
+          - magnus_hp_44
+          - magnus_lp_44
+          - settings_reset
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Select board configuration
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          BOARD="${{ github.event.inputs.board }}"
+          cp "build.${BOARD}.yaml" build.yaml
+          echo "Selected board configuration: ${BOARD}"
+          cat build.yaml
+      
+      - name: Build firmware
+        uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
