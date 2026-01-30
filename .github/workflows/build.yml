@@ -11,6 +11,7 @@ on:
         options:
           - magnus_hp_44
           - magnus_lp_44
+          - magnus_58
           - settings_reset
 
 jobs:
