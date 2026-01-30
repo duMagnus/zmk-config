@@ -15,18 +15,6 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      
-      - name: Select board configuration
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          BOARD="${{ github.event.inputs.board }}"
-          cp "build.${BOARD}.yaml" build.yaml
-          echo "Selected board configuration: ${BOARD}"
-          cat build.yaml
-      
-      - name: Build firmware
-        uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      build_matrix_path: ${{ github.event_name == 'workflow_dispatch' && format('build.{0}.yaml', github.event.inputs.board) || 'build.yaml' }}
