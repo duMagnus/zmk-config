@@ -1,7 +1,5 @@
 name: Build ZMK firmware
-on: 
-  push:
-  pull_request:
+on:
   workflow_dispatch:
     inputs:
       board:
