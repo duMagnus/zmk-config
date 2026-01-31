@@ -14,4 +14,10 @@ if SHIELD_MAGNUS_58_LEFT || SHIELD_MAGNUS_58_RIGHT
 config ZMK_SPLIT
     default y
 
+config ZMK_PM_SOFT_OFF
+  default y
+
+config ZMK_SLEEP
+  default y
+
 endif
