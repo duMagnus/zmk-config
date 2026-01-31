@@ -5,7 +5,6 @@
 
 &soft_off {
     hold-time-ms = <3000>; // Only turn off it the key is held for 3 seconds or longer.
-    /delete-property/ split-peripheral-off-on-press; // Originally the peripheral half of a split keyboard will always enter the soft off state immediately when triggering the behavior, regardless of the hold-time-ms setting If you face reliability issues, remove this setting.
 };
 
 / {
