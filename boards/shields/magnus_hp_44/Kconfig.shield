@@ -3,3 +3,5 @@ config SHIELD_MAGNUS_HP_44_LEFT
 
 config SHIELD_MAGNUS_HP_44_RIGHT
     def_bool $(shields_list_contains,magnus_hp_44_right)
+
+rsource "widgets/Kconfig"
