@@ -13,19 +13,19 @@
         wakeup-source;
 
         row-gpios
-            = <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D15 P1.13 */
+            = <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D18 P1.15 */
+            , <&gpio1 13 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D15 P1.13 */
             , <&gpio1 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D14 P1.11 */
             , <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D16 P0.10 */
-            , <&gpio0  9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)> /* D10 P0.09 */
             ;
 
         col-gpios
-            = <&gpio1  6 GPIO_ACTIVE_HIGH> /* D9 P1.06 */
-            , <&gpio1  4 GPIO_ACTIVE_HIGH> /* D8 P1.04 */
+            = <&gpio1  4 GPIO_ACTIVE_HIGH> /* D8 P1.04 */
             , <&gpio0 11 GPIO_ACTIVE_HIGH> /* D7 P0.11 */
             , <&gpio1  0 GPIO_ACTIVE_HIGH> /* D6 P1.00 */
             , <&gpio0 24 GPIO_ACTIVE_HIGH> /* D5 P0.24 */
             , <&gpio0 22 GPIO_ACTIVE_HIGH> /* D4 P0.22 */
+            , <&gpio0 20 GPIO_ACTIVE_HIGH> /* D3 P0.20 */
             ;
     };
 
