@@ -98,7 +98,7 @@ void battery_module_draw(const battery_module_t *m,
     dsc.font = &lv_font_unscii_8;
 
     // Put text directly after the 8px icon, with a 1px gap
-    const int text_x = (int)m->x + 8 + 1;
+    const int text_x = (int)m->x + 8;
     const int text_w = (int)ctx->portrait_w - text_x;
 
     // Slight y tweak so the small font sits nicely relative to the icon
