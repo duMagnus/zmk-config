@@ -9,10 +9,10 @@ typedef struct {
     screen_state_t *state;
 } output_module_t;
 
-// Output module owns output updates via ZMK events.
+// Output module owns output updates via ZMK events (on the central side).
 // It writes into:
 //   state->output_is_usb (1 if USB, 0 if BLE)
-//   state->ble_profile_index (0-based, from ZMK)
+//   state->ble_profile_index (0-based)
 // and triggers redraw via portrait_demo_redraw().
 void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state_t *state);
 

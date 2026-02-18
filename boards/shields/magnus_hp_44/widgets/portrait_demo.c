@@ -123,7 +123,7 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     ctx.portrait_w = PORTRAIT_W;
     ctx.portrait_h = PORTRAIT_H;
 
-    // Init state (unknowns until modules/events populate)
+    // Init state
     state.battery_percent = 255;
     state.output_is_usb = 0;
     state.ble_profile_index = 0;
@@ -131,7 +131,7 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     // Work item for redraw
     k_work_init(&redraw_work, redraw_work_handler);
 
-    // Init modules (they own updates and trigger redraw on changes)
+    // Init modules (they update state and call redraw() when data changes)
     battery_module_init(&battery_mod, 0, 0, &state);
     output_module_init(&output_mod, 0, 14, &state);
 
