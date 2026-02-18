@@ -3,6 +3,9 @@
 #include <lvgl.h>
 #include <string.h>
 
+#include "render_ctx.h"
+#include "mod_battery.h"
+
 // Physical display buffer (what LVGL flushes to SSD1306)
 enum { DISP_W = 128, DISP_H = 32 };
 
@@ -18,10 +21,16 @@ static uint8_t landscape_buf[DISP_H * STRIDE_BYTES(DISP_W)];
 static lv_obj_t *landscape_canvas;
 static lv_obj_t *portrait_canvas;
 
+static render_ctx_t ctx;
+static screen_state_t state;
+
+// Modules (for now only battery)
+static battery_module_t battery_mod;
+
 static inline int img1bpp_get(const uint8_t *buf, int w, int x, int y) {
     const int stride = STRIDE_BYTES(w);
     const int byte_index = y * stride + (x >> 3);
-    const int bit_index = 7 - (x & 7); // LVGL uses MSB-first for 1bpp images
+    const int bit_index = 7 - (x & 7); // LVGL MSB-first for 1bpp images
     return (buf[byte_index] >> bit_index) & 1;
 }
 
@@ -50,28 +59,25 @@ static void rotate_portrait_to_landscape_cw(void) {
     }
 }
 
-static void draw_portrait_demo(void) {
-    // Clear portrait canvas
-    lv_canvas_fill_bg(portrait_canvas, lv_color_black(), LV_OPA_TRANSP);
+static void draw_scene(void) {
+    // Clear
+    lv_canvas_fill_bg(ctx.portrait_canvas, lv_color_black(), LV_OPA_TRANSP);
 
-    // Draw text in portrait coordinates (upright as you hold the keyboard)
-    lv_draw_label_dsc_t dsc;
-    lv_draw_label_dsc_init(&dsc);
-    dsc.color = lv_color_white();
+    // Update state
+    battery_module_update(&state);
 
-    lv_canvas_draw_text(portrait_canvas, 0, 0, PORTRAIT_W, &dsc, "HELLO");
+    // Draw modules (top-down)
+    battery_module_draw(&battery_mod, &ctx, &state);
 }
 
 void magnus_hp_44_portrait_demo_redraw(void) {
-    if (!portrait_canvas || !landscape_canvas) {
+    if (!ctx.portrait_canvas || !ctx.landscape_canvas) {
         return;
     }
 
-    draw_portrait_demo();
+    draw_scene();
     rotate_portrait_to_landscape_cw();
-
-    // Tell LVGL to repaint the visible canvas
-    lv_obj_invalidate(landscape_canvas);
+    lv_obj_invalidate(ctx.landscape_canvas);
 }
 
 void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
@@ -87,6 +93,18 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     lv_obj_add_flag(portrait_canvas, LV_OBJ_FLAG_HIDDEN);
     lv_canvas_set_buffer(portrait_canvas, portrait_buf, PORTRAIT_W, PORTRAIT_H, LV_IMG_CF_ALPHA_1BIT);
     lv_canvas_fill_bg(portrait_canvas, lv_color_black(), LV_OPA_TRANSP);
+
+    // Fill ctx
+    ctx.portrait_canvas = portrait_canvas;
+    ctx.landscape_canvas = landscape_canvas;
+    ctx.portrait_w = PORTRAIT_W;
+    ctx.portrait_h = PORTRAIT_H;
+
+    // Init state
+    state.battery_percent = 255;
+
+    // Init modules
+    battery_module_init(&battery_mod, 0, 0);
 
     // Initial draw
     magnus_hp_44_portrait_demo_redraw();
