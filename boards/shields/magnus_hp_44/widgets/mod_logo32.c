@@ -81,7 +81,6 @@ static const uint8_t (*get_logo_rows(void))[4] {
 #elif defined(CONFIG_ZMK_SPLIT) && defined(CONFIG_ZMK_SPLIT_ROLE_PERIPHERAL)
     return logo_right_32x32;
 #else
-    // Non-split / unknown role: just use left.
     return logo_right_32x32;
 #endif
 }
