@@ -96,7 +96,7 @@ void battery_module_draw(const battery_module_t *m,
 
     // Force a small font so this fits in 32px width (including 100%).
     // (These are compiled in your build log, so they're available.)
-    dsc.font = &lv_font_montserrat_10;
+    dsc.font = &lv_font_montserrat_12;
 
     // Text starts immediately after the 8px icon. No gap, to maximize space.
     const int text_x = (int)m->x + 8;
