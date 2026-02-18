@@ -4,16 +4,26 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "portrait_demo.h"
-
-#if defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-
 #include <zmk/endpoints.h>
 #include <zmk/endpoints_types.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/endpoint_changed.h>
 
+#include "portrait_demo.h"
+
 static output_module_t *g_output;
+
+#ifdef LV_SYMBOL_USB
+#define OUT_USB LV_SYMBOL_USB
+#else
+#define OUT_USB "USB"
+#endif
+
+#ifdef LV_SYMBOL_BLUETOOTH
+#define OUT_BT LV_SYMBOL_BLUETOOTH
+#else
+#define OUT_BT "BL"
+#endif
 
 static void update_output_state(void) {
     if (!g_output || !g_output->state) {
@@ -30,11 +40,12 @@ static void update_output_state(void) {
 
     if (ep.transport == ZMK_TRANSPORT_BLE) {
         g_output->state->output_is_usb = 0;
-        g_output->state->ble_profile_index = (uint8_t)ep.ble.profile_index; // 0-based
+        /* store 1-based for humans; 0 means unknown/not applicable */
+        g_output->state->ble_profile_index = (uint8_t)ep.ble.profile_index + 1;
         return;
     }
 
-    // Unknown transport
+    /* Unknown transport */
     g_output->state->output_is_usb = 0;
     g_output->state->ble_profile_index = 0;
 }
@@ -62,7 +73,7 @@ void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state
 
     g_output = m;
 
-    // Prime at init (event will keep it fresh later)
+    /* Prime at init (event will keep it fresh later) */
     update_output_state();
 }
 
@@ -73,15 +84,20 @@ void output_module_draw(const output_module_t *m,
         return;
     }
 
+    /* Keep it short so it doesn't wrap on 32px width */
     char buf[8];
 
     if (state->output_is_usb) {
-        // Short label, won’t wrap in 32px width
-        strcpy(buf, "USB");
+        strncpy(buf, OUT_USB, sizeof(buf) - 1);
+        buf[sizeof(buf) - 1] = '\0';
     } else {
-        // Show 1-based index to humans, but keep it short to avoid wrapping
-        unsigned int shown = (unsigned int)state->ble_profile_index + 1;
-        snprintf(buf, sizeof(buf), "BL%u", shown);
+        if (state->ble_profile_index == 0) {
+            /* Unknown BLE slot */
+            snprintf(buf, sizeof(buf), "%s?", OUT_BT);
+        } else {
+            /* Icon (or "BL") + number, no space */
+            snprintf(buf, sizeof(buf), "%s%u", OUT_BT, (unsigned int)state->ble_profile_index);
+        }
     }
 
     lv_draw_label_dsc_t dsc;
@@ -90,24 +106,3 @@ void output_module_draw(const output_module_t *m,
 
     lv_canvas_draw_text(ctx->portrait_canvas, m->x, m->y, ctx->portrait_w, &dsc, buf);
 }
-
-#else
-// Peripheral side: omit output tracking + drawing entirely.
-// (Prevents stale/misleading display and avoids missing-symbol link issues.)
-
-void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state_t *state) {
-    ARG_UNUSED(m);
-    ARG_UNUSED(x);
-    ARG_UNUSED(y);
-    ARG_UNUSED(state);
-}
-
-void output_module_draw(const output_module_t *m,
-                        const render_ctx_t *ctx,
-                        const screen_state_t *state) {
-    ARG_UNUSED(m);
-    ARG_UNUSED(ctx);
-    ARG_UNUSED(state);
-}
-
-#endif
