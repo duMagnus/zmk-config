@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <zephyr/sys/util.h>
+
 #include <zmk/battery.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/battery_state_changed.h>
@@ -11,6 +13,34 @@
 #include "portrait_demo.h"
 
 static battery_module_t *g_battery;
+
+/*
+ * Tiny 8x8 battery icon (1bpp), MSB-first per row.
+ * Terminal is on the right (two pixels wide).
+ */
+static const uint8_t battery_icon_8x8[8] = {
+    0b00000110,
+    0b00001100,
+    0b00011000,
+    0b00111110,
+    0b00001100,
+    0b00011000,
+    0b00110000,
+    0b01100000,
+};
+
+static void draw_battery_icon(lv_obj_t *canvas, int x, int y) {
+    // Canvas is 1bpp; draw white pixels where bits are 1.
+    for (int row = 0; row < 8; row++) {
+        uint8_t bits = battery_icon_8x8[row];
+        for (int col = 0; col < 8; col++) {
+            int on = (bits >> (7 - col)) & 1;
+            if (on) {
+                lv_canvas_set_px(canvas, x + col, y + row, lv_color_white());
+            }
+        }
+    }
+}
 
 static void update_battery_state(void) {
     if (!g_battery || !g_battery->state) {
@@ -54,6 +84,10 @@ void battery_module_draw(const battery_module_t *m,
         return;
     }
 
+    // Draw battery icon at (x, y)
+    draw_battery_icon(ctx->portrait_canvas, m->x, m->y);
+
+    // Prepare text
     char buf[6];
     if (state->battery_percent > 100) {
         strcpy(buf, "??%");
@@ -65,5 +99,11 @@ void battery_module_draw(const battery_module_t *m,
     lv_draw_label_dsc_init(&dsc);
     dsc.color = lv_color_white();
 
-    lv_canvas_draw_text(ctx->portrait_canvas, m->x, m->y, ctx->portrait_w, &dsc, buf);
+    // Draw text to the right of the 8px icon (+2px spacing)
+    lv_canvas_draw_text(ctx->portrait_canvas,
+                        m->x + 10,
+                        m->y - 1,
+                        ctx->portrait_w - (m->x + 10),
+                        &dsc,
+                        buf);
 }
