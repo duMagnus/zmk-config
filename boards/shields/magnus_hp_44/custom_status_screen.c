@@ -3,7 +3,7 @@
 
 #include "widgets/portrait_demo.h"
 
-#include <lvgl.h>
+#include <zephyr/kernel.h>
 
 lv_obj_t *zmk_display_status_screen(void) {
     // ZMK's own built-in status screen uses lv_obj_create(NULL) too,
