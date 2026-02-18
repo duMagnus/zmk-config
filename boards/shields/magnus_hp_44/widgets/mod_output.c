@@ -32,13 +32,13 @@ static const uint8_t bt_icon_8x8[8] = {
 };
 
 static void draw_bt_icon(lv_obj_t *canvas, int x, int y) {
-    // Canvas is 1bpp; we draw white pixels where bits are 1.
     for (int row = 0; row < 8; row++) {
         uint8_t bits = bt_icon_8x8[row];
         for (int col = 0; col < 8; col++) {
             int on = (bits >> (7 - col)) & 1;
             if (on) {
                 lv_canvas_set_px(canvas, x + col, y + row, lv_color_white());
+                lv_canvas_set_px_opa(canvas, x + col, y + row, LV_OPA_COVER);
             }
         }
     }
