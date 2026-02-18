@@ -3,8 +3,6 @@
 
 #include "widgets/portrait_demo.h"
 
-#include <zephyr/logging/log.h>
-#include <zephyr/sys/util.h>
 #include <lvgl.h>
 #include <zmk/endpoints.h>
 #include <zephyr/kernel.h>
