@@ -6,7 +6,7 @@
 typedef struct {
     uint16_t x;
     uint16_t y;
-    screen_state_t *state; // not strictly needed, but kept consistent with other modules
+    screen_state_t *state;
 } layer_module_t;
 
 void layer_module_init(layer_module_t *m, uint16_t x, uint16_t y, screen_state_t *state);

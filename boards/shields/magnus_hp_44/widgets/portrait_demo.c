@@ -129,7 +129,7 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     state.battery_percent = 255;
     state.output_is_usb = 0;
     state.ble_profile_index = 0;
-    state.active_layer = 0;
+    state.layer_name[0] = '\0';
 
     // Work item for redraw
     k_work_init(&redraw_work, redraw_work_handler);
@@ -138,9 +138,8 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     battery_module_init(&battery_mod, 0, 0, &state);
     output_module_init(&output_mod, 0, 14, &state);
 
-    // Layer label near the bottom of the visible area.
-    // Adjust y to taste (this should be visible after rotation).
-    layer_module_init(&layer_mod, 0, 26, &state);
+    // Layer name below output (tweak y as you like)
+    layer_module_init(&layer_mod, 0, 28, &state);
 
     initialized = true;
 

@@ -36,6 +36,12 @@ config LV_USE_IMG
 config LV_FONT_MONTSERRAT_12
     default y
 
+config LV_FONT_MONTSERRAT_10
+    default y
+
+config LV_FONT_MONTSERRAT_8
+    default y
+
 # Give LVGL enough heap for canvas operations
 config LV_Z_MEM_POOL_SIZE
     default 4096
