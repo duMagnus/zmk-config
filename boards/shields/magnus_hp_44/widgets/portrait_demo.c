@@ -135,11 +135,11 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     k_work_init(&redraw_work, redraw_work_handler);
 
     // Init modules (modules update state + request redraw on events)
-    battery_module_init(&battery_mod, 0, 0, &state);
-    output_module_init(&output_mod, 0, 14, &state);
+    battery_module_init(&battery_mod, 0, 16, &state);
+    output_module_init(&output_mod, 0, 32, &state);
 
     // Layer name below output (tweak y as you like)
-    layer_module_init(&layer_mod, 0, 28, &state);
+    layer_module_init(&layer_mod, 0, 48, &state);
 
     initialized = true;
 
