@@ -40,6 +40,20 @@ config LV_FONT_MONTSERRAT_12
 config LV_Z_MEM_POOL_SIZE
     default 4096
 
+config LV_Z_VDB_SIZE
+  default 100
+
+config LV_Z_BITS_PER_PIXEL
+  default 1
+
+choice ZMK_DISPLAY_WORK_QUEUE
+  default ZMK_DISPLAY_WORK_QUEUE_DEDICATED
+endchoice
+
+choice ZMK_DISPLAY_STATUS_SCREEN
+  default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+endchoice
+
 endif # ZMK_DISPLAY
 
 endif
