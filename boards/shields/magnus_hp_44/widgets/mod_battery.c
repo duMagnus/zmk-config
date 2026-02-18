@@ -54,11 +54,11 @@ void battery_module_draw(const battery_module_t *m,
         return;
     }
 
-    char buf[8];
+    char buf[6];
     if (state->battery_percent > 100) {
-        strcpy(buf, "B:?");
+        strcpy(buf, "??%");
     } else {
-        snprintf(buf, sizeof(buf), "B:%u", state->battery_percent);
+        snprintf(buf, sizeof(buf), "%u%%", state->battery_percent);
     }
 
     lv_draw_label_dsc_t dsc;
