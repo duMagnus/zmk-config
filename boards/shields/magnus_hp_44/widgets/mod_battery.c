@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <zephyr/sys/util.h>
+#include <zephyr/sys/util.h>   // ARG_UNUSED
 
 #include <zmk/battery.h>
 #include <zmk/event_manager.h>
@@ -14,11 +14,7 @@
 
 static battery_module_t *g_battery;
 
-/*
- * Tiny 8x8 battery icon (1bpp), MSB-first per row.
- * Terminal is on the right (two pixels wide).
- */
-static const uint8_t battery_icon_8x8[8] = {
+static const uint8_t batt_icon_8x8[8] = {
     0b00000110,
     0b00001100,
     0b00011000,
@@ -29,14 +25,14 @@ static const uint8_t battery_icon_8x8[8] = {
     0b01100000,
 };
 
-static void draw_battery_icon(lv_obj_t *canvas, int x, int y) {
-    // Canvas is 1bpp; draw white pixels where bits are 1.
+static void draw_1bpp_icon_8x8(lv_obj_t *canvas, int x, int y, const uint8_t icon[8]) {
     for (int row = 0; row < 8; row++) {
-        uint8_t bits = battery_icon_8x8[row];
+        uint8_t bits = icon[row];
         for (int col = 0; col < 8; col++) {
             int on = (bits >> (7 - col)) & 1;
             if (on) {
                 lv_canvas_set_px(canvas, x + col, y + row, lv_color_white());
+                lv_canvas_set_px_opa(canvas, x + col, y + row, LV_OPA_COVER);
             }
         }
     }
@@ -84,10 +80,9 @@ void battery_module_draw(const battery_module_t *m,
         return;
     }
 
-    // Draw battery icon at (x, y)
-    draw_battery_icon(ctx->portrait_canvas, m->x, m->y);
+    // Draw battery icon on the left
+    draw_1bpp_icon_8x8(ctx->portrait_canvas, m->x, m->y, batt_icon_8x8);
 
-    // Prepare text
     char buf[6];
     if (state->battery_percent > 100) {
         strcpy(buf, "??%");
@@ -99,11 +94,12 @@ void battery_module_draw(const battery_module_t *m,
     lv_draw_label_dsc_init(&dsc);
     dsc.color = lv_color_white();
 
-    // Draw text to the right of the 8px icon (+2px spacing)
-    lv_canvas_draw_text(ctx->portrait_canvas,
-                        m->x + 10,
-                        m->y - 1,
-                        ctx->portrait_w - (m->x + 10),
-                        &dsc,
-                        buf);
+    // Force a small font so this fits in 32px width (including 100%).
+    // (These are compiled in your build log, so they're available.)
+    dsc.font = &lv_font_montserrat_10;
+
+    // Text starts immediately after the 8px icon. No gap, to maximize space.
+    const int text_x = (int)m->x + 8;
+    const int text_w = (int)ctx->portrait_w - text_x;
+    lv_canvas_draw_text(ctx->portrait_canvas, text_x, m->y - 1, text_w, &dsc, buf);
 }
