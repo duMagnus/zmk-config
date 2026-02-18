@@ -46,9 +46,6 @@ config LV_Z_VDB_SIZE
 config LV_Z_BITS_PER_PIXEL
   default 1
 
-config LV_OBJ_LABEL
-  default y
-
 choice ZMK_DISPLAY_WORK_QUEUE
   default ZMK_DISPLAY_WORK_QUEUE_DEDICATED
 endchoice
