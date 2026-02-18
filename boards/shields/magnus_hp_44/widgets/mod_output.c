@@ -4,26 +4,43 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "portrait_demo.h"
+
+// Only the CENTRAL side should show output (USB/BLE).
+// On the peripheral/right half, omit it entirely.
+#if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+
 #include <zmk/endpoints.h>
 #include <zmk/endpoints_types.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/endpoint_changed.h>
 
-#include "portrait_demo.h"
-
 static output_module_t *g_output;
 
-#ifdef LV_SYMBOL_USB
-#define OUT_USB LV_SYMBOL_USB
-#else
-#define OUT_USB "USB"
-#endif
+// Tiny 8x8 Bluetooth-ish icon (1bpp), MSB-first per row.
+static const uint8_t bt_icon_8x8[8] = {
+    0b00011000,
+    0b00101000,
+    0b01001000,
+    0b10011000,
+    0b10011000,
+    0b01001000,
+    0b00101000,
+    0b00011000,
+};
 
-#ifdef LV_SYMBOL_BLUETOOTH
-#define OUT_BT LV_SYMBOL_BLUETOOTH
-#else
-#define OUT_BT "BL"
-#endif
+static void draw_bt_icon(lv_obj_t *canvas, int x, int y) {
+    // Canvas is 1bpp; we draw white pixels where bits are 1.
+    for (int row = 0; row < 8; row++) {
+        uint8_t bits = bt_icon_8x8[row];
+        for (int col = 0; col < 8; col++) {
+            int on = (bits >> (7 - col)) & 1;
+            if (on) {
+                lv_canvas_set_px(canvas, x + col, y + row, lv_color_white());
+            }
+        }
+    }
+}
 
 static void update_output_state(void) {
     if (!g_output || !g_output->state) {
@@ -40,12 +57,11 @@ static void update_output_state(void) {
 
     if (ep.transport == ZMK_TRANSPORT_BLE) {
         g_output->state->output_is_usb = 0;
-        /* store 1-based for humans; 0 means unknown/not applicable */
-        g_output->state->ble_profile_index = (uint8_t)ep.ble.profile_index + 1;
+        g_output->state->ble_profile_index = (uint8_t)ep.ble.profile_index; // 0-based
         return;
     }
 
-    /* Unknown transport */
+    // Unknown transport
     g_output->state->output_is_usb = 0;
     g_output->state->ble_profile_index = 0;
 }
@@ -53,6 +69,7 @@ static void update_output_state(void) {
 static int on_endpoint_changed(const zmk_event_t *eh) {
     ARG_UNUSED(eh);
 
+    // When output changes, refresh cached state and redraw.
     update_output_state();
     magnus_hp_44_portrait_demo_redraw();
 
@@ -73,7 +90,7 @@ void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state
 
     g_output = m;
 
-    /* Prime at init (event will keep it fresh later) */
+    // Prime initial state (event will keep it fresh)
     update_output_state();
 }
 
@@ -84,25 +101,43 @@ void output_module_draw(const output_module_t *m,
         return;
     }
 
-    /* Keep it short so it doesn't wrap on 32px width */
-    char buf[8];
-
-    if (state->output_is_usb) {
-        strncpy(buf, OUT_USB, sizeof(buf) - 1);
-        buf[sizeof(buf) - 1] = '\0';
-    } else {
-        if (state->ble_profile_index == 0) {
-            /* Unknown BLE slot */
-            snprintf(buf, sizeof(buf), "%s?", OUT_BT);
-        } else {
-            /* Icon (or "BL") + number, no space */
-            snprintf(buf, sizeof(buf), "%s%u", OUT_BT, (unsigned int)state->ble_profile_index);
-        }
-    }
-
     lv_draw_label_dsc_t dsc;
     lv_draw_label_dsc_init(&dsc);
     dsc.color = lv_color_white();
 
-    lv_canvas_draw_text(ctx->portrait_canvas, m->x, m->y, ctx->portrait_w, &dsc, buf);
+    if (state->output_is_usb) {
+        // Keep this short so it never wraps.
+        lv_canvas_draw_text(ctx->portrait_canvas, m->x, m->y, ctx->portrait_w, &dsc, "USB");
+        return;
+    }
+
+    // BLE: draw icon + 1-based number
+    const unsigned int shown = (unsigned int)state->ble_profile_index + 1;
+
+    // icon at (x, y), number to the right
+    draw_bt_icon(ctx->portrait_canvas, m->x, m->y);
+
+    char num[4];
+    snprintf(num, sizeof(num), "%u", shown);
+
+    // Put the number close to the icon to stay on one line.
+    lv_canvas_draw_text(ctx->portrait_canvas, m->x + 10, m->y - 1, ctx->portrait_w - (m->x + 10), &dsc, num);
 }
+
+#else
+// Peripheral/right half: omit output entirely.
+void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state_t *state) {
+    ARG_UNUSED(m);
+    ARG_UNUSED(x);
+    ARG_UNUSED(y);
+    ARG_UNUSED(state);
+}
+
+void output_module_draw(const output_module_t *m,
+                        const render_ctx_t *ctx,
+                        const screen_state_t *state) {
+    ARG_UNUSED(m);
+    ARG_UNUSED(ctx);
+    ARG_UNUSED(state);
+}
+#endif
