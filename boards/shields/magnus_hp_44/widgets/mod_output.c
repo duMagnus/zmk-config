@@ -22,12 +22,12 @@ static output_module_t *g_output;
 // Tiny 8x8 Bluetooth-ish icon (1bpp), MSB-first per row.
 static const uint8_t bt_icon_8x8[8] = {
     0b00011000,
-    0b00101000,
-    0b01001000,
-    0b10011000,
-    0b10011000,
-    0b01001000,
-    0b00101000,
+    0b01010100,
+    0b00110010,
+    0b00011100,
+    0b00011100,
+    0b00110010,
+    0b01010100,
     0b00011000,
 };
 
