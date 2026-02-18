@@ -76,7 +76,7 @@ void layer_module_draw(const layer_module_t *m,
     dsc.color = lv_color_white();
 
     // Use the same small font you already know exists in your build.
-    dsc.font = &lv_font_montserrat_8;
+    dsc.font = &lv_font_montserrat_10;
 
     const char *name = state->layer_name[0] ? state->layer_name : "?";
 
