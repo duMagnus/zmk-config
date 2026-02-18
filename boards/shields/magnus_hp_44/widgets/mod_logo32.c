@@ -3,6 +3,7 @@
 #include <lvgl.h>
 
 #include <zephyr/sys/util.h> // ARG_UNUSED
+#include "portrait_demo.h"
 
 // 32x32, 1bpp, MSB-first per byte, 4 bytes per row.
 static const uint8_t logo_left_32x32[32][4] = {
