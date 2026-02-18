@@ -9,7 +9,7 @@ typedef struct {
     screen_state_t *state;
 } output_module_t;
 
-// Output module owns output updates via ZMK events (on the central side).
+// Output module owns output updates via ZMK events (CENTRAL only).
 // It writes into:
 //   state->output_is_usb (1 if USB, 0 if BLE)
 //   state->ble_profile_index (0-based)

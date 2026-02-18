@@ -76,7 +76,11 @@ static void draw_scene(void) {
 
     // Draw modules using current state
     battery_module_draw(&battery_mod, &ctx, &state);
+
+#if defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    // Only the central side can reliably know the selected output/profile.
     output_module_draw(&output_mod, &ctx, &state);
+#endif
 
     // Rotate portrait -> landscape for the physical OLED
     rotate_portrait_to_landscape_cw(portrait_buf, landscape_buf);
@@ -131,9 +135,13 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     // Work item for redraw
     k_work_init(&redraw_work, redraw_work_handler);
 
-    // Init modules (they update state and call redraw() when data changes)
+    // Init modules: they update state and call redraw() when data changes
     battery_module_init(&battery_mod, 0, 0, &state);
+
+#if defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
+    // Place the output label below battery (adjust y as you like)
     output_module_init(&output_mod, 0, 14, &state);
+#endif
 
     initialized = true;
 

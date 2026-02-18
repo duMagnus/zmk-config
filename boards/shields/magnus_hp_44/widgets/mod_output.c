@@ -4,36 +4,22 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <zephyr/sys/util.h>
-
 #include "portrait_demo.h"
 
-static output_module_t *g_output;
+#if defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
 
-/*
- * IMPORTANT (split keyboards):
- * - Only the CENTRAL side has the full endpoint/output selection logic compiled in.
- * - The PERIPHERAL side often won't link endpoint selection symbols/events (your error).
- */
-#if IS_ENABLED(CONFIG_ZMK_SPLIT) && !IS_ENABLED(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
-#define MAGNUS_OUTPUT_HAS_ENDPOINTS 0
-#else
-#define MAGNUS_OUTPUT_HAS_ENDPOINTS 1
-#endif
-
-#if MAGNUS_OUTPUT_HAS_ENDPOINTS
 #include <zmk/endpoints.h>
 #include <zmk/endpoints_types.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/endpoint_changed.h>
-#endif
+
+static output_module_t *g_output;
 
 static void update_output_state(void) {
     if (!g_output || !g_output->state) {
         return;
     }
 
-#if MAGNUS_OUTPUT_HAS_ENDPOINTS
     const struct zmk_endpoint_instance ep = zmk_endpoints_selected();
 
     if (ep.transport == ZMK_TRANSPORT_USB) {
@@ -51,15 +37,8 @@ static void update_output_state(void) {
     // Unknown transport
     g_output->state->output_is_usb = 0;
     g_output->state->ble_profile_index = 0;
-#else
-    // Peripheral side: we don't have endpoint selection symbols/events available.
-    // Keep something stable (treat as BLE/unknown profile).
-    g_output->state->output_is_usb = 0;
-    g_output->state->ble_profile_index = 0;
-#endif
 }
 
-#if MAGNUS_OUTPUT_HAS_ENDPOINTS
 static int on_endpoint_changed(const zmk_event_t *eh) {
     ARG_UNUSED(eh);
 
@@ -71,7 +50,6 @@ static int on_endpoint_changed(const zmk_event_t *eh) {
 
 ZMK_LISTENER(magnus_hp_44_output_listener, on_endpoint_changed);
 ZMK_SUBSCRIPTION(magnus_hp_44_output_listener, zmk_endpoint_changed);
-#endif
 
 void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state_t *state) {
     if (!m) {
@@ -84,7 +62,7 @@ void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state
 
     g_output = m;
 
-    // Prime at init (event will keep it fresh later on central)
+    // Prime at init (event will keep it fresh later)
     update_output_state();
 }
 
@@ -95,14 +73,15 @@ void output_module_draw(const output_module_t *m,
         return;
     }
 
-    char buf[10];
+    char buf[8];
 
     if (state->output_is_usb) {
+        // Short label, won’t wrap in 32px width
         strcpy(buf, "USB");
     } else {
-        // Show 1-based index to humans; if unknown, this will show "BLE 1"
+        // Show 1-based index to humans, but keep it short to avoid wrapping
         unsigned int shown = (unsigned int)state->ble_profile_index + 1;
-        snprintf(buf, sizeof(buf), "BLE %u", shown);
+        snprintf(buf, sizeof(buf), "BL%u", shown);
     }
 
     lv_draw_label_dsc_t dsc;
@@ -111,3 +90,24 @@ void output_module_draw(const output_module_t *m,
 
     lv_canvas_draw_text(ctx->portrait_canvas, m->x, m->y, ctx->portrait_w, &dsc, buf);
 }
+
+#else
+// Peripheral side: omit output tracking + drawing entirely.
+// (Prevents stale/misleading display and avoids missing-symbol link issues.)
+
+void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state_t *state) {
+    ARG_UNUSED(m);
+    ARG_UNUSED(x);
+    ARG_UNUSED(y);
+    ARG_UNUSED(state);
+}
+
+void output_module_draw(const output_module_t *m,
+                        const render_ctx_t *ctx,
+                        const screen_state_t *state) {
+    ARG_UNUSED(m);
+    ARG_UNUSED(ctx);
+    ARG_UNUSED(state);
+}
+
+#endif
