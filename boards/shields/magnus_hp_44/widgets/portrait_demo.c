@@ -9,6 +9,7 @@
 #include "mod_battery.h"
 #include "mod_output.h"
 #include "mod_layer.h"
+#include "mod_logo32.h"
 
 // Physical display (SSD1306) is landscape 128x32 in LVGL coordinates
 #define DISP_W 128
@@ -37,6 +38,7 @@ static screen_state_t state;
 static battery_module_t battery_mod;
 static output_module_t output_mod;
 static layer_module_t layer_mod;
+static logo32_module_t g_logo;
 
 // Redraw work item (so we never redraw from event callbacks)
 static struct k_work redraw_work;
@@ -140,6 +142,9 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
 
     // Layer name below output (tweak y as you like)
     layer_module_init(&layer_mod, 0, 48, &state);
+
+	logo32_module_init(&g_logo, 0, 64);
+	logo32_module_draw(&g_logo, ctx, state);
 
     initialized = true;
 
