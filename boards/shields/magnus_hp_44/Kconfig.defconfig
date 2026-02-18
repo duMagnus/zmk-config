@@ -25,63 +25,21 @@ config I2C
 config SSD1306
     default y
 
-config ZMK_WIDGET_BATTERY_STATUS_SHOW_PERCENTAGE
+# LVGL features your portrait renderer needs
+config LV_USE_CANVAS
     default y
 
-endif # ZMK_DISPLAY
+config LV_USE_IMG
+    default y
 
-# LED Underglow:
+# Font for text drawing
+config LV_FONT_MONTSERRAT_12
+    default y
 
-# if LVGL
-#
-# config LV_Z_VDB_SIZE
-#     default 64
-#
-# config LV_DPI_DEF
-#     default 148
-#
-# config LV_Z_BITS_PER_PIXEL
-#     default 1
-#
-# choice LV_COLOR_DEPTH
-#     default LV_COLOR_DEPTH_1
-# endchoice
-#
-# endif # LVGL
-#
-# config ZMK_RGB_UNDERGLOW
-#     default y
-# config WS2812_STRIP
-#     default y
-# config ZMK_RGB_UNDERGLOW_EXT_POWER
-#     default n
-
+# Give LVGL enough heap for canvas operations
 config LV_Z_MEM_POOL_SIZE
-  default 4096
+    default 4096
 
-config LV_Z_VDB_SIZE
-  default 100
-
-config LV_Z_BITS_PER_PIXEL
-  default 1
-
-choice ZMK_DISPLAY_WORK_QUEUE
-  default ZMK_DISPLAY_WORK_QUEUE_DEDICATED
-endchoice
-
-choice ZMK_DISPLAY_STATUS_SCREEN
-  default ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
-endchoice
-
-if ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
-config MAGNUS_HP_44_WIDGET_STATUS
-  bool "Magnus HP-44 custom status widget"
-  default y
-  select LV_USE_CANVAS
-  select LV_USE_IMG
-  select LV_FONT_MONTSERRAT_12
-  select LV_FONT_MONTSERRAT_16
-endif
-
+endif # ZMK_DISPLAY
 
 endif
