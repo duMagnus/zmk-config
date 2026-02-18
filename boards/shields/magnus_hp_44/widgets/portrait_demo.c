@@ -3,10 +3,12 @@
 
 #include <string.h>
 #include <zephyr/kernel.h>
+#include <zephyr/sys/util.h> // ARG_UNUSED
 
 #include "render_ctx.h"
 #include "mod_battery.h"
 #include "mod_output.h"
+#include "mod_layer.h"
 
 // Physical display (SSD1306) is landscape 128x32 in LVGL coordinates
 #define DISP_W 128
@@ -34,6 +36,7 @@ static screen_state_t state;
 // Modules
 static battery_module_t battery_mod;
 static output_module_t output_mod;
+static layer_module_t layer_mod;
 
 // Redraw work item (so we never redraw from event callbacks)
 static struct k_work redraw_work;
@@ -76,6 +79,7 @@ static void draw_scene(void) {
     // Draw modules
     battery_module_draw(&battery_mod, &ctx, &state);
     output_module_draw(&output_mod, &ctx, &state);
+    layer_module_draw(&layer_mod, &ctx, &state);
 
     // Rotate portrait -> landscape for the physical OLED
     rotate_portrait_to_landscape_cw(portrait_buf, landscape_buf);
@@ -125,6 +129,7 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     state.battery_percent = 255;
     state.output_is_usb = 0;
     state.ble_profile_index = 0;
+    state.active_layer = 0;
 
     // Work item for redraw
     k_work_init(&redraw_work, redraw_work_handler);
@@ -132,6 +137,10 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     // Init modules (modules update state + request redraw on events)
     battery_module_init(&battery_mod, 0, 0, &state);
     output_module_init(&output_mod, 0, 14, &state);
+
+    // Layer label near the bottom of the visible area.
+    // Adjust y to taste (this should be visible after rotation).
+    layer_module_init(&layer_mod, 0, 26, &state);
 
     initialized = true;
 
