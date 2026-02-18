@@ -6,6 +6,8 @@
 
 #include "portrait_demo.h"
 
+#include <zephyr/toolchain.h>
+
 // Only the CENTRAL side should show output (USB/BLE).
 // On the peripheral/right half, omit it entirely.
 #if !defined(CONFIG_ZMK_SPLIT) || defined(CONFIG_ZMK_SPLIT_ROLE_CENTRAL)
