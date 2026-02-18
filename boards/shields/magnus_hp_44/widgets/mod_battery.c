@@ -48,7 +48,6 @@ static void update_battery_state(void) {
 static int on_battery_changed(const zmk_event_t *eh) {
     ARG_UNUSED(eh);
 
-    // Update cached state, then request redraw (safe: redraw is scheduled on work item)
     update_battery_state();
     magnus_hp_44_portrait_demo_redraw();
 
@@ -69,7 +68,6 @@ void battery_module_init(battery_module_t *m, uint16_t x, uint16_t y, screen_sta
 
     g_battery = m;
 
-    // Prime at init (may be 0/unknown until first measurement; event will update later)
     update_battery_state();
 }
 
@@ -80,13 +78,15 @@ void battery_module_draw(const battery_module_t *m,
         return;
     }
 
-    // Draw battery icon on the left
-    draw_1bpp_icon_8x8(ctx->portrait_canvas, m->x, m->y, batt_icon_8x8);
+    // Draw battery icon at (x, y)
+    draw_1bpp_icon_8x8(ctx->portrait_canvas, (int)m->x, (int)m->y, batt_icon_8x8);
 
+    // Format percent
     char buf[6];
     if (state->battery_percent > 100) {
         strcpy(buf, "??%");
     } else {
+        // supports 0..100%
         snprintf(buf, sizeof(buf), "%u%%", state->battery_percent);
     }
 
@@ -94,12 +94,13 @@ void battery_module_draw(const battery_module_t *m,
     lv_draw_label_dsc_init(&dsc);
     dsc.color = lv_color_white();
 
-    // Force a small font so this fits in 32px width (including 100%).
-    // (These are compiled in your build log, so they're available.)
-    dsc.font = &lv_font_montserrat_8;
+    // This one IS present in your build (you had lv_font_unscii_8.c.obj compiling)
+    dsc.font = &lv_font_unscii_8;
 
-    // Text starts immediately after the 8px icon. No gap, to maximize space.
-    const int text_x = (int)m->x + 8;
+    // Put text directly after the 8px icon, with a 1px gap
+    const int text_x = (int)m->x + 8 + 1;
     const int text_w = (int)ctx->portrait_w - text_x;
-    lv_canvas_draw_text(ctx->portrait_canvas, text_x, m->y - 1, text_w, &dsc, buf);
+
+    // Slight y tweak so the small font sits nicely relative to the icon
+    lv_canvas_draw_text(ctx->portrait_canvas, text_x, (int)m->y - 1, text_w, &dsc, buf);
 }
