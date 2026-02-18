@@ -6,6 +6,7 @@
 
 #include "render_ctx.h"
 #include "mod_battery.h"
+#include "mod_output.h"
 
 // Physical display (SSD1306) is landscape 128x32 in LVGL coordinates
 #define DISP_W 128
@@ -33,6 +34,7 @@ static screen_state_t state;
 
 // Modules
 static battery_module_t battery_mod;
+static output_module_t output_mod;
 
 // Redraw work item (so we never redraw from event callbacks)
 static struct k_work redraw_work;
@@ -74,6 +76,7 @@ static void draw_scene(void) {
 
     // Draw modules using current state
     battery_module_draw(&battery_mod, &ctx, &state);
+    output_module_draw(&output_mod, &ctx, &state);
 
     // Rotate portrait -> landscape for the physical OLED
     rotate_portrait_to_landscape_cw(portrait_buf, landscape_buf);
@@ -122,15 +125,18 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
 
     // Init state
     state.battery_percent = 255;
+    state.output_is_usb = 0;
+    state.ble_profile_index = 0;
 
     // Work item for redraw
     k_work_init(&redraw_work, redraw_work_handler);
 
-    // Init battery module: it will update state and call redraw() when battery changes
+    // Init modules: they update state and call redraw() when data changes
     battery_module_init(&battery_mod, 0, 0, &state);
+    output_module_init(&output_mod, 0, 14, &state);
 
     initialized = true;
 
-    // Initial draw (battery may still be unknown at boot; battery event will trigger another redraw)
+    // Initial draw
     magnus_hp_44_portrait_demo_redraw();
 }
