@@ -1,9 +1,21 @@
 #pragma once
 
-struct output_module_state {
-    char label[12]; // "USB" or "BLE X"
-};
+#include <stdint.h>
+#include "render_ctx.h"
 
-void output_module_init(struct output_module_state *state);
+typedef struct {
+    uint16_t x;
+    uint16_t y;
+    screen_state_t *state;
+} output_module_t;
 
-const char *output_module_get_label(const struct output_module_state *state);
+// Output module owns output updates via ZMK events.
+// It writes into:
+//   state->output_is_usb (1 if USB, 0 if BLE)
+//   state->ble_profile_index (0-based, from ZMK)
+// and triggers redraw via portrait_demo_redraw().
+void output_module_init(output_module_t *m, uint16_t x, uint16_t y, screen_state_t *state);
+
+void output_module_draw(const output_module_t *m,
+                        const render_ctx_t *ctx,
+                        const screen_state_t *state);
