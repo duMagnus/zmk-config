@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#include "portrait_demo.h"
+#include "render_ctx.h"
 
 typedef struct {
     uint16_t x;

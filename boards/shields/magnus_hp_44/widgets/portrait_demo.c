@@ -78,10 +78,11 @@ static void draw_scene(void) {
     // Clear portrait canvas
     lv_canvas_fill_bg(ctx.portrait_canvas, lv_color_black(), LV_OPA_TRANSP);
 
-    // Draw modules
+    // Draw modules (portrait space, top->bottom)
     battery_module_draw(&battery_mod, &ctx, &state);
     output_module_draw(&output_mod, &ctx, &state);
     layer_module_draw(&layer_mod, &ctx, &state);
+    logo32_module_draw(&g_logo, &ctx, &state);
 
     // Rotate portrait -> landscape for the physical OLED
     rotate_portrait_to_landscape_cw(portrait_buf, landscape_buf);
@@ -139,12 +140,10 @@ void magnus_hp_44_portrait_demo_create(lv_obj_t *parent) {
     // Init modules (modules update state + request redraw on events)
     battery_module_init(&battery_mod, 0, 16, &state);
     output_module_init(&output_mod, 0, 32, &state);
-
-    // Layer name below output (tweak y as you like)
     layer_module_init(&layer_mod, 0, 48, &state);
 
-	logo32_module_init(&g_logo, 0, 64);
-	logo32_module_draw(&g_logo, ctx, state);
+    // Logo at y=64 (32px tall), fits in portrait 128px height
+    logo32_module_init(&g_logo, 0, 64);
 
     initialized = true;
 
