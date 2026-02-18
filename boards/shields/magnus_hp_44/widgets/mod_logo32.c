@@ -41,7 +41,6 @@ static const uint8_t logo_left_32x32[32][4] = {
 };
 
 static const uint8_t logo_right_32x32[32][4] = {
-    // For now: same image.
     {0b00000000, 0b00000000, 0b00000000, 0b00000000},
     {0b00000000, 0b00000000, 0b00000000, 0b00000000},
     {0b00000000, 0b00000000, 0b00000000, 0b00010100},
@@ -83,7 +82,7 @@ static const uint8_t (*get_logo_rows(void))[4] {
     return logo_right_32x32;
 #else
     // Non-split / unknown role: just use left.
-    return logo_left_32x32;
+    return logo_right_32x32;
 #endif
 }
 
