@@ -12,5 +12,5 @@ typedef struct {
 typedef struct {
     uint8_t battery_percent;   // 0..100, 255 = unknown
     uint8_t output_is_usb;     // 1 = USB, 0 = BLE (when BLE is selected)
-    uint8_t ble_profile_index; // 1..N (human-friendly), 0 = unknown/not applicable
+    uint8_t ble_profile_index; // 0-based (0..N-1). Display code typically shows +1.
 } screen_state_t;
