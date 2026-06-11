@@ -10,6 +10,7 @@ on:
           - magnus_hp_44
           - magnus_lp_44
           - magnus_58
+          - magnus_56
           - settings_reset
 
 jobs:

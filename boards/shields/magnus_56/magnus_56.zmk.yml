@@ -1,0 +1,14 @@
+file_format: "1"
+id: magnus_56
+name: Magnus 56
+type: shield
+url: https://github.com/dumagnus/
+requires:
+  - pro_micro
+features:
+  - keys
+  - studio
+  - display
+siblings:
+  - magnus_56_left
+  - magnus_56_right
