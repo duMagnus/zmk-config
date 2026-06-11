@@ -1,0 +1,20 @@
+#pragma once
+#include <lvgl.h>
+#include <stdint.h>
+
+typedef struct {
+    lv_obj_t *portrait_canvas;   // 32x128 hidden canvas
+    lv_obj_t *landscape_canvas;  // 128x32 visible canvas
+    uint16_t portrait_w;
+    uint16_t portrait_h;
+} render_ctx_t;
+
+typedef struct {
+    uint8_t battery_percent;   // 0..100, 255 = unknown
+    uint8_t output_is_usb;     // 1 = USB, 0 = BLE (when BLE is selected)
+    uint8_t ble_profile_index; // 0-based (0..N-1). Display code typically shows +1.
+
+    // Highest active layer name (copied from ZMK keymap layer name).
+    // Keep it short to fit your 32px portrait width.
+    char layer_name[16];
+} screen_state_t;
