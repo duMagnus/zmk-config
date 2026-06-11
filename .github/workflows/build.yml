@@ -14,7 +14,20 @@ on:
           - settings_reset
 
 jobs:
+  prep:
+    runs-on: ubuntu-latest
+    outputs:
+      archive_name: ${{ steps.name.outputs.archive_name }}
+    steps:
+      - id: name
+        run: |
+          BOARD="${{ github.event.inputs.board || 'firmware' }}"
+          TS="$(date -u +'%Y%m%d-%H%M%S')"
+          echo "archive_name=${BOARD}-${TS}" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: prep
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
       build_matrix_path: ${{ github.event_name == 'workflow_dispatch' && format('build.{0}.yaml', github.event.inputs.board) || 'build.yaml' }}
+      archive_name: ${{ needs.prep.outputs.archive_name }}
